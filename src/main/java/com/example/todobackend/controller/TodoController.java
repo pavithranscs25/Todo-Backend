@@ -6,7 +6,9 @@ import com.example.todobackend.service.TodoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class TodoController {
         todoClass.setCompleted(createTodoRequest.isCompleted());
         TodoClass updated=todoService.update(id, todoClass);
         if(updated == null){
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found");
         }
         return ResponseEntity.ok(updated);
     }
@@ -53,6 +55,6 @@ public class TodoController {
         if(deleted){
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.notFound().build();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found");
     }
 }
